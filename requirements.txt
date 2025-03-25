@@ -1,0 +1,6 @@
+pandas
+matplotlib
+seaborn
+yfinance
+wordcloud
+scikit-learn
