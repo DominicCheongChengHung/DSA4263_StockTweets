@@ -4,3 +4,7 @@ seaborn
 yfinance
 wordcloud
 scikit-learn
+xgboost
+imbalanced-learn
+scipy
+joblib
