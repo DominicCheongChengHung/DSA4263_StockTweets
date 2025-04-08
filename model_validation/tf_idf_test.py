@@ -51,7 +51,7 @@ class RecommendationSystem:
             return ""
     def predict(self, input_string):
         """Predicts the recommendation for the given input string."""
-        input_df = pd.DataFrame({'text': [input_string]})
+        input_df = pd.DataFrame({'text': input_string})
         input_df['hashtag_count'] = input_df['text'].apply(self.count_hashtags)
         input_df['emoji_count'] = input_df['text'].apply(self.count_emojis)
         input_df['text'] = input_df['text'].apply(self.preprocess_text)
@@ -93,8 +93,8 @@ class RecommendationSystem:
 
 if __name__ == "__main__":
     # Check if the correct number of command-line arguments are provided
-    pipeline_path = r"C:\Users\limti\PycharmProjects\DSA4263_StockTweets\model_training\tfidf_training\lr_pipeline.pkl"
-    vectorizer_path = r"C:\Users\limti\PycharmProjects\DSA4263_StockTweets\model_training\tfidf_training\lr_vectorizer.pkl"
+    pipeline_path = r"/model_training/tfidf_training/lr_pipeline.pkl"
+    vectorizer_path = r"/model_training/tfidf_training/lr_vectorizer.pkl"
 
     input_text = "Execute the following command, replacing the placeholders with your actual file paths and input text"
 
