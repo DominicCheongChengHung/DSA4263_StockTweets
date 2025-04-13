@@ -122,10 +122,10 @@ class PumpDetection:
 
         input_df['hashtag_count'] = input_df['text'].apply(self.count_hashtags)
         input_df['emoji_count'] = input_df['text'].apply(self.count_emojis)
+        input_df = self.process_text_column(input_df)
         input_df['keyword_count'] = input_df['text'].apply(self.count_keywords)
         input_df['stock_ticker_count'] = input_df['text'].apply(self.count_dollar_capital_tickers)
         input_df['url_count'] = input_df['text'].apply(self.count_url_mentions)
-        input_df = self.process_text_column(input_df)
         input_df['text'] = input_df['text'].apply(self.preprocess_text)
 
         tfidf_matrix = self.vectorizer.transform(input_df['text'])
