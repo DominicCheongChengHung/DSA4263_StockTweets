@@ -9,3 +9,6 @@ imbalanced-learn
 scipy
 joblib
 networkx
+langdetect
+deep_translator
+emoji
