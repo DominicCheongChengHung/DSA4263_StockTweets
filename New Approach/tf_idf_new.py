@@ -106,7 +106,7 @@ class PumpDetection:
         text = text.lower()
         return text
 
-    def predict(self, input_string, numerical_column = False):
+    def predict(self, input_string, numerical_column=False):
         """Predicts the recommendation for the given input string."""
         if not numerical_column:
             if type(input_string) == str:
@@ -136,20 +136,23 @@ class PumpDetection:
             prediction = self.pipeline.predict(input_df)
             return prediction
 
-    def predict_proba(self, input_string):
+    def predict_proba(self, input_string, numerical_column=False):
         """Predicts the probability of each class."""
-        if type(input_string) == str:
-            input_df = pd.DataFrame({'text': [input_string]})
-        else:
-            input_df = pd.DataFrame({'text': input_string})
+        if not numerical_column:
+            if type(input_string) == str:
+                input_df = pd.DataFrame({'text': [input_string]})
+            else:
+                input_df = pd.DataFrame({'text': input_string})
 
-        input_df['hashtag_count'] = input_df['text'].apply(self.count_hashtags)
-        input_df['emoji_count'] = input_df['text'].apply(self.count_emojis)
-        input_df['keyword_count'] = input_df['text'].apply(self.count_keywords)
-        input_df['stock_ticker_count'] = input_df['text'].apply(self.count_dollar_capital_tickers)
-        input_df['url_count'] = input_df['text'].apply(self.count_url_mentions)
-        input_df = self.process_text_column(input_df)
-        input_df['text'] = input_df['text'].apply(self.preprocess_text)
+            input_df['hashtag_count'] = input_df['text'].apply(self.count_hashtags)
+            input_df['emoji_count'] = input_df['text'].apply(self.count_emojis)
+            input_df['keyword_count'] = input_df['text'].apply(self.count_keywords)
+            input_df['url_count'] = input_df['text'].apply(self.count_url_mentions)
+            input_df = self.process_text_column(input_df)
+            input_df['text'] = input_df['text'].apply(self.preprocess_text)
+        else:
+            input_df = input_string
+            input_df['text'] = input_df['text'].apply(self.preprocess_text)
 
         tfidf_matrix = self.vectorizer.transform(input_df['text'])
         tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=self.vectorizer.get_feature_names_out())
