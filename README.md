@@ -114,18 +114,29 @@ For the machine learning portion, we split this problem into 2 different situati
 
 For analyzing individual text data, we process the text information into the Text Content features as well as the Text representation in feature engineering. We then make use of Gradient Boosting model to predict whether the user is a pumper or not. These texts that have been flagged are identified as suspicious and made to be used by our second model. 
 
-The training portion for this can be found in ```text_model_training.ipynb```
+The training portion for this can be found in ```notebook/text_model_training.ipynb```
 
 The final model we used can be found in ```model/gradient_boosting_balanced_best_w_smote_pipeline.joblib```
 
 This model is the exact same as found in ```codebase/model/text_gradient_boost_pipeline.joblib```
+
+#### Usage
+
+To evaluate the effectiveness of the text-based model, we performed an additional analysis using stock market data.  This analysis aims to determine how well the model's tweet classifications align with actual price anomalies in the stock market, which can be indicative of pump-and-dump events.
+
+The key findings from this analysis are as follows:
+
+* The model demonstrates some capability in predicting tweets that coincide with price anomalies.
+* Total Price Anomalies: 6391
+* Price Anomalies Captured by Predicted Pump Tweets: 538
+* Percentage of Price Anomalies Captured: 8.42%
 
 
 #### Network based model
 
 After passing the data through the first model, which is less computationally expensive, the suspicious usernames are then passed into the network based model and we verify whether or not the user is a pumper. The model used in this portion is also XGBoost, and we made use of the "Network Features" portion of the feature engineering portion.
 
-The training portion for this can be found in ```model_training/network_analytics_models.ipynb```
+The training portion for this can be found in ```notebook/model_training/network_analytics_models.ipynb```
 
 The final model used can be found in ```model_training/models/network_analysis_XGBoost_model_2.joblib```
 
