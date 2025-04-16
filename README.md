@@ -62,7 +62,7 @@ For the data preprocessing, we ensure that the datetime columns from the tweets 
 Next, as we look at the ‘Improved Pumper Network’ graph below, those users that are ‘known pumpers’, as represented by the red nodes, occupy key positions in the graph such that they act as central hubs or bridges within the communication network. 
 It should be noted, there is not many connections and this graph is rather sparse.
 
-![Network snapshot](images/graph_nework.png)
+![Network snapshot](images/graph_network.png)
 
 2. Centrality analysis
 
@@ -165,7 +165,7 @@ The application employs a two-stage model workflow:
 
 **Disclaimer:** While the models provide valuable insights, the final decision to ban a user should not be solely based on the model's output.  Administrator review and discretion are essential to ensure accurate identification and avoid false accusations.
 
-### API Endpoints\
+### API Endpoints
 
 The application provides the following API endpoints:
 
