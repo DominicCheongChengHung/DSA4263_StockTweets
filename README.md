@@ -116,9 +116,9 @@ For analyzing individual text data, we process the text information into the Tex
 
 The training portion for this can be found in ```notebook/text_model_training.ipynb```
 
-The final model we used can be found in ```model/gradient_boosting_balanced_best_w_smote_pipeline.joblib```
+The final model we used can be found in ```notebook/model/gradient_boosting_balanced_best_w_smote_pipeline.joblib```
 
-This model is the exact same as found in ```codebase/model/text_gradient_boost_pipeline.joblib```
+, and a copy is also available in the codebase at ```codebase/model/text_gradient_boost_pipeline.joblib```
 
 #### Usage
 
@@ -138,9 +138,9 @@ After passing the data through the first model, which is less computationally ex
 
 The training portion for this can be found in ```notebook/model_training/network_analytics_models.ipynb```
 
-The final model used can be found in ```model_training/models/network_analysis_XGBoost_model_2.joblib```
+The final model used can be found in ```notebook/model_training/models/network_analysis_XGBoost_model_2.joblib```
 
-This model is the exact same as found in ```codebase/model/netword_analysis_XGBoost_model.joblib```
+, and a copy is also available in the codebase at `codebase/model/netword_analysis_XGBoost_model.joblib`
 
 
 ### Usage
