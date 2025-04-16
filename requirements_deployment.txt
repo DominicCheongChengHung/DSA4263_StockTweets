@@ -1,0 +1,9 @@
+flask
+pandas
+emoji
+joblib
+numpy
+deep-translator
+langdetect
+scikit-learn
+xgboost

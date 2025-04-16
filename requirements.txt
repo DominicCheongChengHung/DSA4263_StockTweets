@@ -12,3 +12,4 @@ networkx
 langdetect
 deep_translator
 emoji
+flask

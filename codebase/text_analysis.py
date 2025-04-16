@@ -4,10 +4,14 @@ import emoji
 import joblib
 import sys
 import numpy as np
-from sklearn.pipeline import Pipeline
 from deep_translator import GoogleTranslator
 from langdetect import detect
+import os
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+csv_file_path = os.path.join(os.path.dirname(BASE_DIR), "data", "scored_tweets_final_translated_with_network_analytics.csv")
+text_analysis_paths = [os.path.join(BASE_DIR, "model", "text_gradient_boost_pipeline.joblib"),
+                       os.path.join(BASE_DIR, "model", "text_gradient_boost_vectorizer.joblib")]
 class PumpDetection:
     def __init__(self, pipeline_path, vectorizer_path):
         """
@@ -54,7 +58,6 @@ class PumpDetection:
             'insane gains', 'major catalyst', 'catalyst', 'breakout imminent', 'buy the dip',
             'diamond hands', 'paper hands', 'long term hold', 'squeeze it', 'squeeze em',
             'pamp it', 'pumping', 'dumping', 'bagholding', 'moon', 'rocket ship',
-            'squeeze it', 'squeeze em', 'pamp it', 'pumping', 'dumping', 'bagholding', 'moon', 'rocket ship',
             'get in', 'get out', 'take profit', 'stop loss', 'limit order', 'market order', 'stop order'
         ]
         count = 0
@@ -167,23 +170,36 @@ class PumpDetection:
             prediction_proba = self.pipeline.predict_proba(input_df)
             return prediction_proba
 
-if __name__ == "__main__":
-    pipeline_path = "model/gradient_boosting_pipeline.joblib"
-    vectorizer_path = "model/gradient_boosting_vectorizer.joblib"
+# Initialize the PumpDetection model once.
+try:
+    pump_detection_model = PumpDetection(
+        text_analysis_paths[0],
+        text_analysis_paths[1]
+    )
+except Exception as e:
+    print(f"Error initializing PumpDetection model: {e}")
+    sys.exit(1)  # Exit if the model fails to load
 
-    input_text = "To the moon, bitches #Elon #Millionaire #ROCKETROCKET"
+def get_text_analysis(tweet_text):
+    """
+    Analyzes a single tweet for pump-and-dump characteristics using the pre-loaded
+    PumpDetection model.
 
+    Args:
+        tweet_text (str): The text content of the tweet to analyze.
+
+    Returns:
+        int: The prediction (0 or 1) indicating whether the tweet is classified
+            as related to a pump-and-dump scheme.  Returns None on error.
+    """
+    global pump_detection_model # Use the global instance
     try:
-        recommendation_system = PumpDetection(pipeline_path, vectorizer_path)
-        prediction = recommendation_system.predict(input_text)
-        probabilities = recommendation_system.predict_proba(input_text)
+        prediction = pump_detection_model.predict(tweet_text)
+        return prediction[0]  # Extract the single prediction from the array
 
-        print(f"Prediction: {prediction}")
-        print(f"Probabilities: {probabilities}")
-
-    except FileNotFoundError:
-        print("Error: One or both of the specified files were not found.")
-        sys.exit(1)
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-        sys.exit(1)
+        print(f"Error analyzing tweet: {e}")
+        return None  # Handle errors and return None
+
+if __name__ == "__main__":
+    pass

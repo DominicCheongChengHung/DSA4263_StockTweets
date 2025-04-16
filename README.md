@@ -118,6 +118,9 @@ The training portion for this can be found in ```text_model_training.ipynb```
 
 The final model we used can be found in ```model/gradient_boosting_balanced_best_w_smote_pipeline.joblib```
 
+This model is the exact same as found in ```codebase/model/text_gradient_boost_pipeline.joblib```
+
+
 #### Network based model
 
 After passing the data through the first model, which is less computationally expensive, the suspicious usernames are then passed into the network based model and we verify whether or not the user is a pumper. The model used in this portion is also XGBoost, and we made use of the "Network Features" portion of the feature engineering portion.
@@ -125,6 +128,8 @@ After passing the data through the first model, which is less computationally ex
 The training portion for this can be found in ```model_training/network_analytics_models.ipynb```
 
 The final model used can be found in ```model_training/models/network_analysis_XGBoost_model_2.joblib```
+
+This model is the exact same as found in ```codebase/model/netword_analysis_XGBoost_model.joblib```
 
 
 ### Usage
@@ -139,6 +144,142 @@ With only 20% of the original data used, we predicted 96 tweets, and using these
 
 ![Confusion matrix](images/test_confusion_matrix.png)
 
+### Model Workflow Explanation
+
+The application employs a two-stage model workflow:
+
+1.  **Text-based model:** The text-based model is used to analyze individual tweets and flag those that exhibit characteristics commonly associated with pump-and-dump schemes. This model helps to narrow down the large volume of tweets to a smaller, more manageable set of potentially suspicious messages.
+
+2.  **Network-based model:** The network-based model then analyzes the users who posted the tweets flagged by the text-based model. This model examines the user's network connections and activity patterns to assess their likelihood of being involved in pump-and-dump schemes.  This stage provides a secondary layer of verification.
+
+**Disclaimer:** While the models provide valuable insights, the final decision to ban a user should not be solely based on the model's output.  Administrator review and discretion are essential to ensure accurate identification and avoid false accusations.
+
+### API Endpoints\
+
+The application provides the following API endpoints:
+
+* **/analyze_tweet** (POST): Analyzes a single tweet for pump-and-dump characteristics.
+
+    * Input:
+
+        * `tweet_text` (string): The text of the tweet to analyze, provided in the request body as JSON.
+
+    * Expected Output:
+
+        * A JSON response containing the prediction:
+
+            * `prediction` (integer): 1 if the tweet is classified as pump-and-dump, 0 otherwise.
+
+    * Example Input:
+
+        ```json
+        {
+          "tweet_text": "This stock is going to the MOON! Buy now! #PumpAndDump"
+        }
+        ```
+
+    * Example Output:
+
+        ```json
+        {
+          "prediction": 1
+        }
+        ```
+
+* **/analyze_user_network** (POST): Analyzes a user's network metrics.  Due to the use of a preset CSV file, only a limited number of user screen names are available for analysis.  Here are a few examples:
+
+        * AlexDelarge6553
+        * AmandaCStocks
+        * WhaleTrades
+        * killa_pump
+
+    * Input:
+
+        * `user_screenname` (string): The Twitter screen name of the user to analyze, provided in the request body as JSON.
+
+    * Expected Output:
+
+        * A JSON response containing the prediction:
+
+            * `prediction` (integer): 1 if the user is classified as pump-and-dump, 0 otherwise.
+
+    * Example Input:
+
+        ```json
+        {
+          "user_screenname": "1102Trading"
+        }
+        ```
+
+    * Example Output:
+
+        ```json
+        {
+          "prediction": 1
+        }
+        ```
+
+### Docker Setup
+
+To set up a Docker environment for this project, follow these steps:
+
+1.  **Create a Dockerfile:** Create a file named `Dockerfile` in the root directory of your project (the directory containing the `codebase` and `data` directories). The contents of the Dockerfile should be:
+
+    ```dockerfile
+    # Use a Python base image
+    FROM python:3.11-slim-buster
+    
+    # Set the working directory in the container
+    WORKDIR /app
+    
+    # Copy the requirements file into the container
+    COPY requirements_deployment.txt ./
+    
+    # Install the Python dependencies
+    RUN pip install --no-cache-dir -r requirements_deployment.txt
+    
+    # Copy Files
+    COPY codebase/ ./codebase/
+    COPY data/ ./data/
+    COPY main.py ./
+    
+    # Expose the port that the Flask application listens on
+    EXPOSE 5000
+    
+    # Set the environment variable for Flask
+    ENV FLASK_APP=./main.py
+    
+    # Command to run the Flask application.  Use the standard "flask run" command
+    CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+    ```
+
+2.  **Create a `requirements_deployment.txt` file:** Create a file named `requirements_deployment.txt` in the same directory as the `Dockerfile` and list the project dependencies:
+
+    ```text
+    flask
+    pandas
+    emoji
+    joblib
+    numpy
+    deep-translator
+    langdetect
+    scikit-learn
+    xgboost
+    ```
+
+3.  **Build the Docker image:** Open a terminal in the directory containing the `Dockerfile` and run:
+
+    ```bash
+    docker build -t pump-detection .
+    ```
+
+4.  **Run the Docker container:** After the image is built, run it:
+
+    ```bash
+    docker run -p 5000:5000 pump-detection
+    ```
+
+    This will start the Flask application within the container, accessible on port 5000 of your host machine.
 
 
 
