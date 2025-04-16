@@ -1,6 +1,10 @@
 # Detecting Pump and Dump Schemes on Twitter using Machine Learning and Network Analysis 
 
-
+## Authors
+1. Lim Ting Kai
+2. Dominic Cheong
+3. Michaen Ho
+   
 ## Table of contents
 
 1.  [Project Title and Description](#project-title-and-description)
