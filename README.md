@@ -251,7 +251,7 @@ To set up a Docker environment for this project, follow these steps:
     
     # Copy Files
     COPY codebase/ ./codebase/
-    COPY data/ ./data/
+    COPY data/processed/ ./data/
     COPY main.py ./
     
     # Expose the port that the Flask application listens on

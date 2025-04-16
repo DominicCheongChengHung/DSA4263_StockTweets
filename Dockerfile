@@ -12,7 +12,7 @@ RUN pip install --no-cache-dir -r requirements_deployment.txt
 
 # Copy Files
 COPY codebase/ ./codebase/
-COPY data/ ./data/
+COPY data/processed/ ./data/
 COPY main.py ./
 
 # Expose the port that the Flask application listens on
