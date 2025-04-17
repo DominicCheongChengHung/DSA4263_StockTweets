@@ -42,7 +42,7 @@ In this project, we used primarily used a labeled twitter tweets dataset, found 
 * We leverage the "Stock Related Tweet Sentiment" dataset from Kaggle, available at [https://www.kaggle.com/datasets/mattgilgo/stock-related-tweet-sentiment](https://www.kaggle.com/datasets/mattgilgo/stock-related-tweet-sentiment).
 * This dataset provides a collection of tweets related to various stocks, along with sentiment labels, which are crucial for training our machine learning models.
 * The dataset was downloaded directly from Kaggle, and the relevant CSV files were used for the project.
-* Please download the dataset from the link provided and place the files in a `data/scored_tweets_total.csv` directory within the project folder.
+* Please download the dataset from the link provided and place the files in a `data/raw/scored_tweets_total.csv` directory within the project folder.
 
 **2. Historical Stock Data:**
 
@@ -114,7 +114,7 @@ For the machine learning portion, we split this problem into 2 different situati
 
 For analyzing individual text data, we process the text information into the Text Content features as well as the Text representation in feature engineering. We then make use of Gradient Boosting model to predict whether the user is a pumper or not. These texts that have been flagged are identified as suspicious and made to be used by our second model. 
 
-The training portion for this can be found in ```notebook/text_model_training.ipynb```
+The training portion for this can be found in ```notebook/main_text_analytics_model.ipynb```
 
 The final model we used can be found in ```notebook/model/gradient_boosting_balanced_best_w_smote_pipeline.joblib```
 
@@ -122,7 +122,7 @@ The final model we used can be found in ```notebook/model/gradient_boosting_bala
 
 #### Usage
 
-To evaluate the effectiveness of the text-based model, we performed an additional analysis using stock market data.  This analysis aims to determine how well the model's tweet classifications align with actual price anomalies in the stock market, which can be indicative of pump-and-dump events.
+To evaluate the effectiveness of the text-based model, we performed an additional analysis using stock market data, ```data/processed/stock_yfinance_data_test_on_real_data.csv```.  This analysis aims to determine how well the model's tweet classifications align with actual price anomalies in the stock market, which can be indicative of pump-and-dump events.
 
 The key findings from this analysis are as follows:
 
@@ -136,7 +136,7 @@ The key findings from this analysis are as follows:
 
 After passing the data through the first model, which is less computationally expensive, the suspicious usernames are then passed into the network based model and we verify whether or not the user is a pumper. The model used in this portion is also XGBoost, and we made use of the "Network Features" portion of the feature engineering portion.
 
-The training portion for this can be found in ```notebook/model_training/network_analytics_models.ipynb```
+The training portion for this can be found in ```notebook/main_network_analytics_models.ipynb```
 
 The final model used can be found in ```notebook/model_training/models/network_analysis_XGBoost_model_2.joblib```
 
@@ -145,7 +145,7 @@ The final model used can be found in ```notebook/model_training/models/network_a
 
 ### Usage
 
-To simulate doing this and validate using our model, we took the entire dataset ```data/scored_tweets_final_translated.csv```, passed it into a train_test_split to extract a test dataset, which was 20% of the original dataset, and fed it into our text based model. 
+To simulate doing this and validate using our model, we took the entire dataset ```data/processed/scored_tweets_final_translated.csv```, passed it into a train_test_split to extract a test dataset, which was 20% of the original dataset, and fed it into our text based model. 
 
 The model initially identified 96 tweets that are potentially suspicious. From this 96 tweets, we extracted the usernames and then performed network analysis using the network_analysis model identified earlier.
 
@@ -292,7 +292,15 @@ To set up a Docker environment for this project, follow these steps:
 
     This will start the Flask application within the container, accessible on port 5000 of your host machine.
 
+### Deployment
+The provided code sets up a Flask-based API. This API acts as an interface, allowing other applications (like those developed by Twitter developers) to interact with the pump-and-dump detection model. The core idea is to make the model's functionality accessible over the web, rather than requiring direct access to the model's code.
 
+Here's how it works:
 
+*  **API Endpoints:** The main.py file defines two key endpoints:
+   * ```/analyze_tweet```: For analyzing individual tweets. A Twitter developer can send a tweet's text to this endpoint and receive a prediction about whether it's likely a pump-and-dump tweet.
+   * ```/analyze_user_network```: For analyzing a Twitter user's network. A developer can send a user's screen name to this endpoint and receive information about that user's network, which can be helpful in identifying potentially suspicious accounts.
 
+*  **Standard Communication:** Twitter developers can interact with these endpoints using standard HTTP requests. This means they can use any programming language or tool that can send web requests (which is almost everything) to access the model.
 
+*  **Integration:** This makes it easy to integrate the pump-and-dump detection functionality into other applications. For example, a Twitter client could use the API to automatically flag suspicious tweets, or a trading platform could use it to assess the risk associated with certain users.
